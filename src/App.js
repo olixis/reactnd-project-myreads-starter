@@ -1,13 +1,30 @@
 import React from 'react'
-import  Book  from './Book'
 import  BookShelf from './BookShelf'
 import './App.css'
+import * as BooksAPI from './BooksAPI'
 
 class BooksApp extends React.Component {
   state = {
-    showSearchPage: false
+    showSearchPage: false,
+    books: []
   }
 
+  componentWillMount(){
+    BooksAPI.getAll().then((books) => this.setState({books: books}))
+  }
+  
+  changeShelf = (event,id) => {
+    console.log(event)
+    console.log(id)
+    const newBooks = this.state.books.map( (book) => {
+      if(book.id === id){
+        book.shelf = event;
+      }
+      return book
+    })
+    console.log(newBooks)
+    this.setState({books: newBooks})
+  }
 
   render() {
     return (
@@ -39,9 +56,9 @@ class BooksApp extends React.Component {
               <h1>MyReads</h1>
             </div>
             <div className="list-books-content">
-                <BookShelf title="Currently Reading" shelf="currentlyreading"/>
-                <BookShelf title="Want to Read" shelf="wanttoread"/>
-                <BookShelf title="Read" shelf="read"/>
+                <BookShelf books={this.state.books} changeShelf={this.changeShelf} title="Currently Reading" shelf="currentlyreading"/>
+                <BookShelf books={this.state.books} changeShelf={this.changeShelf} title="Want to Read" shelf="wanttoread"/>
+                <BookShelf books={this.state.books} changeShelf={this.changeShelf} title="Read" shelf="read"/>
             </div>
             <div className="open-search">
               <button onClick={() => this.setState({ showSearchPage: true })}>Add a book</button>

@@ -1,15 +1,8 @@
 import React, { Component } from 'react';
 import Book from './Book'
-import * as BooksAPI from './BooksAPI'
 
 class BookShelf extends Component {
-  state = {
-    books: [],
-  }
 
-  componentWillMount(){
-    BooksAPI.getAll().then((books) => this.setState({books: books}))
-  }
     render() {
         return (
           <div className="bookshelf">
@@ -17,16 +10,17 @@ class BookShelf extends Component {
           <div className="bookshelf-books">
             <ol className="books-grid">
                 {
-                  this.state.books
+                  this.props.books
                   .filter((book) => book.shelf.toLowerCase() === this.props.shelf)
                   .map((book) => 
-                  <Book key={book.id} title={book.title} author={book.authors.join(", ")} image={book.imageLinks.smallThumbnail}/>)
+                  <Book changeShelf={this.props.changeShelf} key={book.id} id={book.id} title={book.title} author={book.authors.join(", ")} image={book.imageLinks.smallThumbnail}/>)
                 }
             </ol>
           </div>
         </div>
         );
     }
+
 }
 
 export default BookShelf;
